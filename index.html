@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sayf1x — Ambient Музыка</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,600;1,300&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    font-family: 'Montserrat', sans-serif;
+    color: #d9d9d9;
+    background: linear-gradient(180deg, #000000 20%, #3a0a57 80%);
+    position: relative;
+    overflow-y: scroll;
+  }
+
+  /* Едва видимые мелкие звёзды */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(1.2px 1.2px at 15% 10%, #ddd3 80%, transparent 95%),
+      radial-gradient(0.9px 0.9px at 40% 55%, #eee2 80%, transparent 95%),
+      radial-gradient(0.8px 0.8px at 70% 20%, #ccc2 80%, transparent 95%),
+      radial-gradient(1px 1px at 90% 80%, #ddd2 80%, transparent 95%);
+    background-repeat: repeat;
+    background-size: 80px 80px;
+    pointer-events: none;
+    z-index: 0;
+    animation: starsTwinkle 15s linear infinite;
+  }
+
+  @keyframes starsTwinkle {
+    0%, 100% {opacity: 1;}
+    50% {opacity: 0.3;}
+  }
+
+  /* Планета с свечением */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 25%;
+    right: 10%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle at center, #7a3fff 40%, #2a0d5e 90%);
+    border-radius: 50%;
+    box-shadow:
+      0 0 40px 10px #8240ff88 inset,
+      0 0 60px 15px #8240ffbb;
+    filter: blur(5px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Японские цитаты */
+  .jp-quote-left, .jp-quote-right {
+    position: fixed;
+    top: 0.8rem; /* чуть ниже верхнего края, чтобы не обрезать */
+    width: 2rem;
+    height: 99vh;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 900;
+    font-size: 3.6rem;
+    color: #c9a3ff;
+    text-shadow: 0 0 10px #a566ffbb;
+    user-select: none;
+    writing-mode: vertical-rl;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+    letter-spacing: 0.12rem;
+    margin: 0;
+    padding: 0;
+    z-index: 15;
+    white-space: nowrap;
+    opacity: 0;
+    animation: fadeIn 2.5s ease forwards;
+  }
+  .jp-quote-left {
+    left: 0;
+    animation-delay: 0.3s;
+  }
+  .jp-quote-right {
+    right: 0;
+    animation-delay: 0.6s;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Виджет с треками — сдвинут левее */
+  .track-list-wrapper {
+    position: fixed;
+    top: 15vh;
+    left: 3rem; /* сдвинул левее, чтобы не закрывать цитату */
+    height: 70vh;
+    width: 200px;
+    overflow: hidden;
+    z-index: 10;
+    user-select: none;
+    pointer-events: auto;
+  }
+  .track-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    animation: scrollDown 12s linear infinite;
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: #d9cfff;
+    text-shadow: 0 0 10px #a566ffcc;
+  }
+  .track-list:hover {
+    animation-play-state: paused;
+  }
+  .track-list a {
+    color: #d9cfff;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .track-list a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  @keyframes scrollDown {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-50%);
+    }
+  }
+
+  .container {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 4rem 12rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 20; /* выше чем у виджета */
+  }
+
+  header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 3rem;
+    color: #c9a3ff;
+    text-shadow: 0 0 14px #a566ff;
+    margin: 0;
+    opacity: 0;
+    animation: fadeIn 2s ease forwards 0.5s;
+  }
+
+  .ambient-short {
+    margin-top: 4rem;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1.25rem;
+    color: #d1caffcc;
+    text-shadow: 0 0 8px #8c7effcc;
+    max-width: 600px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 2.5s ease forwards 1.2s;
+  }
+
+  .ambient-text-wrapper {
+    margin-top: 1.5rem;
+    padding: 1.5rem 2.5rem;
+    background: rgba(57, 10, 87, 0.35);
+    border-radius: 14px;
+    box-shadow: 0 0 15px #7f6fffcc;
+    user-select: none;
+    opacity: 0;
+    animation: fadeIn 3s ease forwards 1.8s;
+    transition: box-shadow 0.4s ease;
+    max-width: 650px;
+    cursor: default;
+    position: relative;
+    z-index: 25; /* поверх виджета */
+  }
+  .ambient-text-wrapper:hover {
+    box-shadow: 0 0 30px 5px #b595ffdd;
+  }
+
+  .ambient-text {
+    font-weight: 300;
+    font-size: 1.3rem;
+    text-align: center;
+    color: #d7ccffdd;
+    font-style: italic;
+    text-shadow: 0 0 6px #8f88b8aa;
+    line-height: 1.45;
+  }
+
+  .contacts {
+    text-align: center;
+    font-weight: 300;
+    font-size: 1rem;
+    color: #c5a6ffcc;
+    margin-top: 7rem;
+    margin-bottom: 2rem;
+    z-index: 30;
+    opacity: 0;
+    animation: fadeIn 2.5s ease forwards 3.2s;
+  }
+  .contacts a {
+    color: #bfa6ff;
+    text-decoration: none;
+    margin: 0 1rem;
+    transition: color 0.3s ease;
+  }
+  .contacts a:hover {
+    color: #e2ceff;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 650px) {
+    .jp-quote-left, .jp-quote-right {
+      width: 1.8rem;
+      font-size: 2.5rem;
+      top: 1rem;
+    }
+    .track-list-wrapper {
+      display: none;
+    }
+    .container {
+      padding: 2rem 1rem 8rem;
+    }
+    header h1 {
+      font-size: 2.4rem;
+    }
+    .ambient-text-wrapper {
+      max-width: 90vw;
+      padding: 1.3rem 1.5rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Японские цитаты -->
+<div class="jp-quote-left" aria-hidden="true">
+  静かな光は心を満たす音の中に夢の旋律が浮かぶ
+</div>
+<div class="jp-quote-right" aria-hidden="true">
+  夜の風が夢を運ぶ無限の旋律が魂に触れる
+</div>
+
+<!-- Виджет с треками -->
+<div class="track-list-wrapper" role="list" aria-label="Список треков Sayf1x">
+  <div class="track-list">
+    <a href="https://open.spotify.com/track/3mpakL4nu3yfVH35MRyKdR?si=8d5da03586344970" target="_blank" rel="noopener noreferrer" role="listitem">Nightfall</a>
+    <a href="https://open.spotify.com/track/7zRxW0RdMlPNUUt8Bwdn3B?si=8e6fa69b2f244d24" target="_blank" rel="noopener noreferrer" role="listitem">Emberwood</a>
+    <a href="https://open.spotify.com/track/6kFUbT9W7wAdhrB7F8C7Up?si=d64dbcf4910a4dba" target="_blank" rel="noopener noreferrer" role="listitem">Lost In Time</a>
+    <a href="https://open.spotify.com/track/3w4Lo1iZhHxkUu7PkNcMnj?si=ee2b9135c42d4e7d" target="_blank" rel="noopener noreferrer" role="listitem">Empty Hands</a>
+    <a href="https://open.spotify.com/track/2gPLOiPQ5ZPyYFcUBx6xrI?si=9eea7f963a4f43ed" target="_blank" rel="noopener noreferrer" role="listitem">Nowhere</a>
+    <a href="https://open.spotify.com/track/4OJQpXyX8z3mtKYkM7kIvw?si=6835f9a15b5a4f64" target="_blank" rel="noopener noreferrer" role="listitem">Quiet Rain</a>
+    <a href="https://open.spotify.com/track/0jJ5Cj0hVo7qMH8JkWMoSO?si=78ab9dd5e8f24be3" target="_blank" rel="noopener noreferrer" role="listitem">Afterglow</a>
+    <a href="https://open.spotify.com/track/2knPvmnnmK70GpPUD3DHbT?si=39685a93e99643e2" target="_blank" rel="noopener noreferrer" role="listitem">Cold Sky</a>
+    <a href="https://open.spotify.com/track/3A3eAjF7HZph7fBMRwTkuA?si=1a8f3a9a48334e57" target="_blank" rel="noopener noreferrer" role="listitem">Whisper In My Head</a>
+    <a href="https://open.spotify.com/track/2Ht62oh8oHTCCwPvLUq6ny?si=d8deaa3a71e947c9" target="_blank" rel="noopener noreferrer" role="listitem">Fade Into Blue</a>
+  </div>
+</div>
+
+<div class="container" role="main" aria-label="Основной контент">
+  <header>
+    <h1>Sayf1x</h1>
+  </header>
+
+  <p class="ambient-short" aria-label="Короткая цитата ambient музыки">В каждом звуке — пространство тишины и глубины.</p>
+
+  <div class="ambient-text-wrapper" aria-label="Основная цитата ambient музыки" tabindex="0">
+    <p class="ambient-text">
+      В тишине ночи рождаются образы и мелодии, проникающие в глубины души, наполняя пространство светом и покоем.
+    </p>
+  </div>
+
+  <div class="contacts" aria-label="Контакты Sayf1x">
+    <a href="mailto:sayfx38@gmail.com" target="_blank" rel="noopener noreferrer">sayfx38@gmail.com</a> |
+    <a href="https://www.instagram.com/sayf1xs/" target="_blank" rel="noopener noreferrer">Instagram</a> |
+    <a href="https://www.tiktok.com/@sayf1xs" target="_blank" rel="noopener noreferrer">TikTok</a>
+  </div>
+</div>
+
+</body>
+</html>
